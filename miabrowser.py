@@ -42,15 +42,18 @@ async def main():
     if useAzure:
         llm = ChatOpenAI(
             model=os.getenv('AZURE_OPENAI_DEPLOYMENT', 'gpt-4'),
-            api_key=os.getenv('AZURE_OPENAI_API_KEY'),
-            system_prompt=miaSystemPrompt
+            api_key=os.getenv('AZURE_OPENAI_API_KEY')
         )
     else:
         llm = ChatOpenAI(
             model=os.getenv('OPENAI_MODEL', 'gpt-4.1-mini'),
-            api_key=os.getenv('OPENAI_API_KEY'),
-            system_prompt=miaSystemPrompt
+            api_key=os.getenv('OPENAI_API_KEY')
         )
+
+    # Combine Mia prompt and task
+    miaSystemPrompt = loadMiaPrompt()
+    taskDesc = os.getenv('AGENT_TASK', 'Browse to github.com and find the number of stars for browser-use repo')
+    fullTask = f"{miaSystemPrompt}\n\n{taskDesc}"
 
     # Example: ask user before running agent
     reply = await askUser("Ready to start agent task? (yes/no)")
@@ -61,7 +64,7 @@ async def main():
     # Create browser-use agent
     print("Agent is starting its task!")
     agent = Agent(
-        task=taskDesc,
+        task=fullTask,
         llm=llm,
     )
     try:
