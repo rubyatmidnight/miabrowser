@@ -29,10 +29,9 @@ async def askUser(question, msgFile='agent_message.txt', replyFile='user_reply.t
         await asyncio.sleep(pollInterval)
 
 async def main():
-    # Start sandbox
-    print("Starting sandbox!")
+    # Initialize sandbox (local/VM, no start/close needed)
+    print("Initializing sandbox!")
     sandbox = Sandbox()
-    await sandbox.start()
 
     # Load config from env
     useAzure = os.getenv('USE_AZURE_OPENAI', 'false').lower() == 'true'
@@ -60,7 +59,6 @@ async def main():
     reply = await askUser("Ready to start agent task? (yes/no)")
     if reply.lower() != 'yes':
         print("Agent stopped by user.")
-        await sandbox.close()
         return
 
     # Create browser-use agent
@@ -74,8 +72,6 @@ async def main():
     except Exception as e:
         print(f'Agent error: {e}')
 
-    # Close sandbox
-    print("Sandbox closed! Bye bye!")
-    await sandbox.close()
+    print("Sandbox session ended! Bye bye!")
 
 asyncio.run(main())
