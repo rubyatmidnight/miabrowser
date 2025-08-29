@@ -42,16 +42,13 @@ async def main():
     if useAzure:
         llm = ChatOpenAI(
             model=os.getenv('AZURE_OPENAI_DEPLOYMENT', 'gpt-4'),
-            api_base=os.getenv('AZURE_OPENAI_ENDPOINT'),
             api_key=os.getenv('AZURE_OPENAI_API_KEY'),
-            api_type='azure',
-            api_version=os.getenv('AZURE_OPENAI_API_VERSION', '2023-05-15'),
-            deployment_id=os.getenv('AZURE_OPENAI_DEPLOYMENT', 'gpt-4'),
             system_prompt=miaSystemPrompt
         )
     else:
         llm = ChatOpenAI(
             model=os.getenv('OPENAI_MODEL', 'gpt-4.1-mini'),
+            api_key=os.getenv('OPENAI_API_KEY'),
             system_prompt=miaSystemPrompt
         )
 
